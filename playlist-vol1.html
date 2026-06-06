@@ -493,21 +493,13 @@
             ▼ ジャケットイラストをここに設定してください
             用意できたら下の <img> タグのコメントを外して src を書き換えてください。
 
-            <img id="jacketImg" src="jacket-vol1.jpg" alt="Playlist Vol.1 Jacket">
-
+ 
             ※ 推奨サイズ: 800×800px 以上（正方形）
             ※ ファイルはHTMLと同じフォルダに置くか、フルURLで指定してください
             ※ id="jacketImg" を残すとぼかし背景に自動反映されます
           -->
-          <div class="jacket-placeholder">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#9e9891" stroke-width="1.2" xmlns="http://www.w3.org/2000/svg">
-              <rect x="3" y="3" width="18" height="18" rx="2"/>
-              <circle cx="12" cy="12" r="3"/>
-              <path d="M3 9h18M3 15h18M9 3v18M15 3v18" stroke-dasharray="2 2"/>
-            </svg>
-            <span class="jacket-placeholder-text">
-              ジャケットイラストを<br>ここに配置<br><br>
-              img タグの src を<br>差し替えてください
+			           <img id="jacketImg" src="withRAIN_2.jpg" alt="Playlist Vol.1 Jacket">
+
             </span>
           </div>
         </div>
@@ -553,24 +545,10 @@
             music.apple.com のプレイリストページ →「共有」→「埋め込み」でコードを取得できます。
 
             取得したら <div class="embed-placeholder">〜</div> を丸ごと削除して
-            代わりに以下を貼り付けてください：
-
-            <iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
-                    frameborder="0" height="450"
-                    style="width:100%;max-width:660px;overflow:hidden;border-radius:10px;"
-                    sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
-                    src="https://embed.music.apple.com/jp/playlist/XXXX">
-            </iframe>
-          -->
-          <div class="embed-placeholder">
-            <span class="placeholder-label">Apple Music — Embed Widget</span>
-            <span class="placeholder-url">「共有 → 埋め込み」の iframeコードをここに貼ってください</span>
-            <a href="https://music.apple.com/jp/playlist/your-playlist"
-               target="_blank" rel="noopener"
-               class="listen-btn btn-apple">
-              ▶ Apple Music で聴く
-            </a>
-          </div>
+            代わりに以下を貼り付けてください： -->
+ 
+    <iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="450" style="width:100%;max-width:660px;overflow:hidden;border-radius:10px;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/jp/playlist/with-rain-%E9%9B%A8%E9%9F%B3%E3%81%A8%E4%B8%80%E7%B7%92%E3%81%AB%E8%81%B4%E3%81%8D%E3%81%9F%E3%81%84%E3%83%97%E3%83%AC%E3%82%A4%E3%83%AA%E3%82%B9%E3%83%88/pl.u-LdbqzodTqEA3Dq"></iframe>
+         
         </div>
       </div>
 
@@ -601,15 +579,7 @@
                     loading="lazy">
             </iframe>
           -->
-          <div class="embed-placeholder">
-            <span class="placeholder-label">Spotify — Embed Widget</span>
-            <span class="placeholder-url">「共有 → 埋め込みプレイリスト」の iframeコードをここに貼ってください</span>
-            <a href="https://open.spotify.com/playlist/your-playlist"
-               target="_blank" rel="noopener"
-               class="listen-btn btn-spotify">
-              ▶ Spotify で聴く
-            </a>
-          </div>
+          <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/4169KRdHJADKowqtzfl1aS?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
         </div>
       </div>
 
@@ -633,8 +603,8 @@
           -->
           <div class="embed-placeholder">
             <span class="placeholder-label">Amazon Music — Link Button</span>
-            <span class="placeholder-url">href をあなたのプレイリスト URL に変更してください</span>
-            <a href="https://music.amazon.co.jp/your-playlist-url"
+            <span class="placeholder-url"></span>
+            <a href="https://music.amazon.co.jp/user-playlists/8009d76f56dd4dcbb9f274be2a3d0e2ejajp?marketplaceId=A1VC38T7YXB528&musicTerritory=JP&ref=dm_sh_1HlZ6tLTzT4H6RUOnlIysTKvg"
                target="_blank" rel="noopener"
                class="listen-btn btn-amazon">
               ▶ Amazon Music で聴く
