@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MY PLAYLIST — Vol.1</title>
+
+  <meta property="og:title" content="MY PLAYLIST — Vol.1">
+  <meta property="og:description" content="Amazon Music / Apple Music / Spotify で聴けます">
+  <meta property="og:type" content="website">
+  <!-- <meta property="og:image" content="https://yourdomain.com/ogp-vol1.png"> -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:         #faf9f7;
+      --surface:    #ffffff;
+      --surface2:   #f4f2ee;
+      --border:     #e0ddd8;
+      --border-dark:#c8c4bd;
+      --accent:     #1a1a1a;
+      --accent2:    #5c6bc0;   /* indigo — Vol番号など小さいアクセント */
+      --muted:      #9e9891;
+      --text:       #1a1a1a;
+      --text-dim:   #6b6560;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── THIN TOP BAR ── */
+    .topbar {
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent2) 0%, #9c6dd8 50%, #e06090 100%);
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: relative;
+      padding: 52px 48px 44px;
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      background: var(--surface);
+    }
+
+    /* 大きな薄いVol文字 */
+    header::after {
+      content: 'Vol.1';
+      position: absolute;
+      right: -8px;
+      bottom: -24px;
+      font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+      font-weight: 300;
+      font-size: clamp(100px, 20vw, 220px);
+      color: var(--border);
+      pointer-events: none;
+      line-height: 1;
+      letter-spacing: -4px;
+      user-select: none;
+    }
+
+    .vol-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      color: var(--accent2);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .vol-badge::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 1px;
+      background: var(--accent2);
+    }
+
+    h1 {
+      font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+      font-weight: 300;
+      font-size: clamp(44px, 9vw, 88px);
+      letter-spacing: 0.06em;
+      line-height: 1;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ── SERIES NAV ── */
+    .series-nav {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 48px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .series-label {
+      font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      color: var(--muted);
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .series-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--border-dark);
+      background: transparent;
+      color: var(--text-dim);
+      font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .dot:hover {
+      border-color: var(--accent2);
+      color: var(--accent2);
+      background: #f0f2ff;
+    }
+
+    .dot.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: bold;
+    }
+
+    /* ── CONTENT WRAPPER ── */
+    .content-wrapper {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    /* ── JACKET SECTION ── */
+    .jacket-section {
+      padding: 48px 0 0;
+      display: flex;
+      justify-content: center;  /* センター配置 */
+    }
+
+    /* ── ぼかし背景つきジャケット外枠 ── */
+    .jacket-outer {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      aspect-ratio: 1 / 1;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.12);
+    }
+
+    /* ぼかし背景レイヤー（画像のsrcをJSで同期） */
+    .jacket-blur-bg {
+      position: absolute;
+      inset: -24px;          /* はみ出して角のアーティファクトを隠す */
+      background-size: cover;
+      background-position: center;
+      filter: blur(28px) brightness(1.05) saturate(1.2);
+      transform: scale(1.05);
+      z-index: 0;
+      /* 画像がないときはグラデ */
+      background-color: var(--surface2);
+    }
+
+    /* ぼかし背景の上に薄い白オーバーレイ（見やすさ調整） */
+    .jacket-blur-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.28);
+    }
+
+    /* メインのジャケット画像枠 */
+    .jacket-frame {
+      position: relative;
+      z-index: 1;
+      width: calc(100% - 48px);
+      aspect-ratio: 1 / 1;
+      margin: 24px auto;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+      background: var(--surface2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 実際の画像を入れたときのスタイル */
+    .jacket-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* 画像がないときのプレースホルダー */
+    .jacket-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      height: 100%;
+      padding: 32px;
+    }
+
+    .jacket-placeholder svg {
+      width: 48px;
+      height: 48px;
+      opacity: 0.25;
+    }
+
+    .jacket-placeholder-text {
+      font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    /* ── DESCRIPTION ── */
+    .description-block {
+      padding: 36px 0 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .description-block p {
+      font-size: 14px;
+      line-height: 2;
+      color: var(--text-dim);
+      max-width: 560px;
+    }
+
+    /* ── MAIN: SERVICE CARDS ── */
+    main {
+      padding: 40px 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .service-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      animation: fadeUp 0.45s ease both;
+    }
+
+    .service-card:nth-child(1) { animation-delay: 0.05s; }
+    .service-card:nth-child(2) { animation-delay: 0.13s; }
+    .service-card:nth-child(3) { animation-delay: 0.21s; }
+
+    .service-card:hover {
+      border-color: var(--border-dark);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 22px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+
+    .service-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .service-icon svg { width: 18px; height: 18px; }
+
+    .icon-amazon  { background: #FF9900; }
+    .icon-apple   { background: #fc3c44; }
+    .icon-spotify { background: #1DB954; }
+
+    .service-name {
+      font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--text);
+    }
+
+    .service-tag {
+      margin-left: auto;
+      font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      border: 1px solid var(--border-dark);
+      padding: 3px 8px;
+      border-radius: 2px;
+      background: var(--surface);
+    }
+
+    /* ── EMBED AREA ── */
+    .embed-area {
+      padding: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .embed-placeholder {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 28px 24px;
+      border: 1px dashed var(--border-dark);
+      border-radius: 4px;
+      background: var(--surface2);
+    }
+
+    .placeholder-label {
+      font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    .placeholder-url {
+      font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+      font-size: 9px;
+      color: var(--accent2);
+      opacity: 0.75;
+      word-break: break-all;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .embed-area iframe {
+      width: 100%;
+      border: none;
+      border-radius: 6px;
+    }
+
+    /* ── LISTEN BUTTON ── */
+    .listen-btn {
+      margin-top: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-decoration: none;
+      padding: 9px 18px;
+      border-radius: 3px;
+      transition: opacity 0.18s, transform 0.18s;
+    }
+
+    .listen-btn:hover { opacity: 0.82; transform: translateY(-1px); }
+
+    .btn-amazon  { background: #FF9900; color: #1a1a1a; }
+    .btn-apple   { background: #fc3c44; color: #fff; }
+    .btn-spotify { background: #1DB954; color: #1a1a1a; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 40px 0 56px;
+      margin-top: 48px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .credit {
+      font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .back-link {
+      font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border-dark);
+      padding-bottom: 2px;
+      transition: color 0.18s, border-color 0.18s;
+    }
+
+    .back-link:hover {
+      color: var(--accent2);
+      border-color: var(--accent2);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      header { padding: 40px 24px 36px; }
+      .series-nav { padding: 16px 24px; }
+      .content-wrapper { padding: 0 24px; }
+      .jacket-frame { max-width: 100%; }
+      footer { padding: 32px 0 48px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar"></div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="vol-badge">Series / Vol.001</div>
+    <h1>My Playlist</h1>
+    <p class="subtitle">Amazon Music &nbsp;·&nbsp; Apple Music &nbsp;·&nbsp; Spotify</p>
+  </header>
+
+  <!-- SERIES NAVIGATION -->
+  <nav class="series-nav">
+    <span class="series-label">All Vols.</span>
+    <div class="series-dots">
+      <a href="playlist-vol1.html" class="dot active">1</a>
+      <a href="playlist-vol2.html" class="dot">2</a>
+      <a href="playlist-vol3.html" class="dot">3</a>
+      <!-- Vol.を追加するたびにここにdotを1つ追加してください -->
+    </div>
+  </nav>
+
+  <div class="content-wrapper">
+
+    <!-- ── JACKET ILLUSTRATION ── -->
+    <section class="jacket-section">
+      <div class="jacket-outer" id="jacketOuter">
+        <!-- ぼかし背景レイヤー（画像と同じsrcをJSで自動セット） -->
+        <div class="jacket-blur-bg" id="jacketBlurBg"></div>
+
+        <div class="jacket-frame">
+          <!--
+            ▼ ジャケットイラストをここに設定してください
+            用意できたら下の <img> タグのコメントを外して src を書き換えてください。
+
+            <img id="jacketImg" src="jacket-vol1.jpg" alt="Playlist Vol.1 Jacket">
+
+            ※ 推奨サイズ: 800×800px 以上（正方形）
+            ※ ファイルはHTMLと同じフォルダに置くか、フルURLで指定してください
+            ※ id="jacketImg" を残すとぼかし背景に自動反映されます
+          -->
+          <div class="jacket-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#9e9891" stroke-width="1.2" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M3 9h18M3 15h18M9 3v18M15 3v18" stroke-dasharray="2 2"/>
+            </svg>
+            <span class="jacket-placeholder-text">
+              ジャケットイラストを<br>ここに配置<br><br>
+              img タグの src を<br>差し替えてください
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      // ジャケット画像のsrcをぼかし背景に自動反映
+      const jacketImg = document.getElementById('jacketImg');
+      const blurBg    = document.getElementById('jacketBlurBg');
+      if (jacketImg && blurBg) {
+        const sync = () => {
+          blurBg.style.backgroundImage = `url('${jacketImg.src}')`;
+        };
+        jacketImg.complete ? sync() : jacketImg.addEventListener('load', sync);
+      }
+    </script>
+
+    <!-- ── DESCRIPTION ── -->
+    <div class="description-block">
+      <p>
+        ここにプレイリストの説明文を入れてください。どんな気分のとき、どんな場面で聴いてほしいか、など自由に書いてください。
+      </p>
+    </div>
+
+    <!-- ── SERVICE CARDS ── -->
+    <main>
+
+      <!-- ① Apple Music -->
+      <div class="service-card">
+        <div class="card-header">
+          <div class="service-icon icon-apple">
+            <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/>
+            </svg>
+          </div>
+          <span class="service-name">Apple Music</span>
+          <span class="service-tag">Streaming</span>
+        </div>
+        <div class="embed-area">
+          <!--
+            ▼ Apple Musicの埋め込みコードをここに貼り付けてください
+            music.apple.com のプレイリストページ →「共有」→「埋め込み」でコードを取得できます。
+
+            取得したら <div class="embed-placeholder">〜</div> を丸ごと削除して
+            代わりに以下を貼り付けてください：
+
+            <iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
+                    frameborder="0" height="450"
+                    style="width:100%;max-width:660px;overflow:hidden;border-radius:10px;"
+                    sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
+                    src="https://embed.music.apple.com/jp/playlist/XXXX">
+            </iframe>
+          -->
+          <div class="embed-placeholder">
+            <span class="placeholder-label">Apple Music — Embed Widget</span>
+            <span class="placeholder-url">「共有 → 埋め込み」の iframeコードをここに貼ってください</span>
+            <a href="https://music.apple.com/jp/playlist/your-playlist"
+               target="_blank" rel="noopener"
+               class="listen-btn btn-apple">
+              ▶ Apple Music で聴く
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ② Spotify -->
+      <div class="service-card">
+        <div class="card-header">
+          <div class="service-icon icon-spotify">
+            <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424a.623.623 0 0 1-.857.207c-2.348-1.435-5.304-1.76-8.785-.964a.623.623 0 1 1-.277-1.215c3.809-.87 7.077-.496 9.712 1.115a.623.623 0 0 1 .207.857zm1.223-2.722a.78.78 0 0 1-1.072.257c-2.687-1.652-6.785-2.131-9.965-1.166a.78.78 0 0 1-.973-.519.781.781 0 0 1 .52-.973c3.632-1.102 8.147-.568 11.233 1.329a.78.78 0 0 1 .257 1.072zm.105-2.835C14.692 8.95 9.375 8.775 6.297 9.71a.937.937 0 1 1-.543-1.793c3.532-1.072 9.404-.865 13.115 1.338a.937.937 0 0 1-.955 1.612z"/>
+            </svg>
+          </div>
+          <span class="service-name">Spotify</span>
+          <span class="service-tag">Streaming</span>
+        </div>
+        <div class="embed-area">
+          <!--
+            ▼ Spotifyの埋め込みコードをここに貼り付けてください
+            プレイリストページの「…」→「共有」→「埋め込みプレイリスト」でコードを取得できます。
+
+            取得したら <div class="embed-placeholder">〜</div> を丸ごと削除して
+            代わりに以下を貼り付けてください：
+
+            <iframe style="border-radius:12px"
+                    src="https://open.spotify.com/embed/playlist/XXXX?utm_source=generator"
+                    width="100%" height="352" frameBorder="0"
+                    allowfullscreen=""
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    loading="lazy">
+            </iframe>
+          -->
+          <div class="embed-placeholder">
+            <span class="placeholder-label">Spotify — Embed Widget</span>
+            <span class="placeholder-url">「共有 → 埋め込みプレイリスト」の iframeコードをここに貼ってください</span>
+            <a href="https://open.spotify.com/playlist/your-playlist"
+               target="_blank" rel="noopener"
+               class="listen-btn btn-spotify">
+              ▶ Spotify で聴く
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ③ Amazon Music -->
+      <div class="service-card">
+        <div class="card-header">
+          <div class="service-icon icon-amazon">
+            <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/>
+            </svg>
+          </div>
+          <span class="service-name">Amazon Music</span>
+          <span class="service-tag">Streaming</span>
+        </div>
+        <div class="embed-area">
+          <!--
+            ▼ Amazon Musicの埋め込みコードをここに貼り付けてください
+            ※ Amazon Musicは公式の埋め込みウィジェットを提供していないため、
+               リンクボタン方式を推奨しています。
+               下のaタグのhrefをあなたのプレイリストURLに変更してください。
+          -->
+          <div class="embed-placeholder">
+            <span class="placeholder-label">Amazon Music — Link Button</span>
+            <span class="placeholder-url">href をあなたのプレイリスト URL に変更してください</span>
+            <a href="https://music.amazon.co.jp/your-playlist-url"
+               target="_blank" rel="noopener"
+               class="listen-btn btn-amazon">
+              ▶ Amazon Music で聴く
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+      <span class="credit">My Playlist Series &nbsp;/&nbsp; Vol.001</span>
+      <a href="index.html" class="back-link">← All Volumes</a>
+    </footer>
+
+  </div><!-- /content-wrapper -->
+
+</body>
+</html>
